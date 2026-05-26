@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>App Development Kit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --blue: #2774ae;
+        --dark-blue: #003b5c;
+        --gold: #ffd100;
+        --black: #000000;
+        --gray: #666666;
+        --light: #f7f8fa;
+        --line: #d9dee5;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--black);
+        background: #ffffff;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 16px;
+        line-height: 1.52;
+      }
+
+      main {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 34px 24px 44px;
+      }
+
+      .course-line {
+        color: var(--blue);
+        font-size: 0.86rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        line-height: 1.35;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+      }
+
+      .gold-rule {
+        height: 5px;
+        width: 100%;
+        background: var(--gold);
+        margin-bottom: 24px;
+      }
+
+      h1,
+      h2 {
+        color: var(--dark-blue);
+        font-family: "Whitney Bold", Whitney, "Source Sans 3", "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.15;
+      }
+
+      h1 {
+        font-size: clamp(1.8rem, 3vw, 3rem);
+        line-height: 1.04;
+        margin: 0 0 8px;
+      }
+
+      .subtitle {
+        color: var(--gray);
+        font-size: 1rem;
+        margin: 0 0 34px;
+      }
+
+      h2 {
+        border-bottom: 1px solid var(--line);
+        font-size: clamp(1.35rem, 2.3vw, 1.8rem);
+        line-height: 1.15;
+        margin: 36px 0 14px;
+        padding-bottom: 10px;
+      }
+
+      h3 {
+        color: var(--dark-blue);
+        font-size: 1.12rem;
+        line-height: 1.25;
+        margin: 24px 0 8px;
+      }
+
+      p {
+        margin: 0 0 12px;
+      }
+
+      a {
+        color: var(--dark-blue);
+        text-decoration-thickness: 1px;
+        text-underline-offset: 3px;
+      }
+
+      a:hover,
+      a:focus {
+        color: var(--blue);
+      }
+
+      ol,
+      ul {
+        margin: 8px 0 14px 22px;
+        padding: 0;
+      }
+
+      li {
+        margin: 5px 0;
+      }
+
+      .note {
+        background: var(--light);
+        border-left: 4px solid var(--blue);
+        padding: 14px 16px;
+        margin: 18px 0 24px;
+      }
+
+      .model-note {
+        background: #eef8f1;
+        border: 1px solid #c8e5d0;
+        border-left: 4px solid #2e7d46;
+        border-radius: 6px;
+        color: #143b23;
+        padding: 13px 16px;
+        margin: 12px 0 18px;
+      }
+
+      .model-note strong {
+        color: #143b23;
+      }
+
+      .model-note p:last-child {
+        margin-bottom: 0;
+      }
+
+      .download-box {
+        border: 1px solid #f1c400;
+        border-top: 6px solid var(--gold);
+        border-radius: 8px;
+        background: #fffaf0;
+        box-shadow: 0 10px 24px rgba(0, 59, 92, 0.08);
+        padding: 18px 20px;
+        margin: 22px 0 28px;
+      }
+
+      .download-box strong {
+        color: var(--dark-blue);
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .terminal {
+        background: #050505;
+        color: #f5f5f5;
+        border-radius: 6px;
+        padding: 14px 72px 14px 16px;
+        margin: 12px 0 18px;
+        overflow-x: auto;
+        position: relative;
+        box-shadow: inset 0 0 0 1px #2a2a2a;
+      }
+
+      .terminal pre {
+        margin: 0;
+        font-family: "SFMono-Regular", "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+        font-size: 14px;
+        line-height: 1.55;
+        white-space: pre-wrap;
+      }
+
+      .agent-instruction {
+        background: #f2f5f8;
+        color: var(--dark-blue);
+        border: 1px solid #d7e1e8;
+        border-left: 4px solid var(--dark-blue);
+        border-radius: 6px;
+        padding: 13px 72px 13px 16px;
+        margin: 12px 0 18px;
+        position: relative;
+      }
+
+      .agent-instruction pre {
+        margin: 0;
+        font-family: "SFMono-Regular", "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+        font-size: 14px;
+        line-height: 1.55;
+        white-space: pre-wrap;
+      }
+
+      .agent-mark {
+        color: var(--dark-blue);
+        font-weight: 700;
+      }
+
+      .copy-button {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        border: 1px solid rgba(0, 59, 92, 0.18);
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.88);
+        color: var(--dark-blue);
+        cursor: pointer;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1;
+        padding: 6px 8px;
+      }
+
+      .terminal .copy-button {
+        border-color: #4b4b4b;
+        background: #1f1f1f;
+        color: #f5f5f5;
+      }
+
+      .copy-button:hover,
+      .copy-button:focus {
+        outline: none;
+        border-color: var(--blue);
+      }
+
+      code {
+        font-family: "SFMono-Regular", "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+        font-size: 0.94em;
+      }
+
+      .prompt {
+        color: var(--gold);
+        font-weight: 700;
+      }
+
+      .muted {
+        color: #b8b8b8;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12px 0 20px;
+        font-size: 14px;
+      }
+
+      th {
+        background: #e8f1f7;
+        color: var(--black);
+        text-align: left;
+        font-weight: 700;
+      }
+
+      th,
+      td {
+        border: 1px solid var(--line);
+        padding: 9px 10px;
+        vertical-align: top;
+      }
+
+      .checklist li {
+        margin-bottom: 8px;
+      }
+
+      .closing-note {
+        color: var(--dark-blue);
+        font-family: "Whitney Bold", Whitney, "Source Sans 3", "Helvetica Neue", Arial, sans-serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin: 28px 0 0;
+      }
+
+      @media print {
+        body {
+          background: #ffffff;
+        }
+
+        main {
+          padding: 0.7in 0.85in;
+          max-width: none;
+        }
+
+        .terminal {
+          break-inside: avoid;
+        }
+      }
+
+      @media (max-width: 720px) {
+        main {
+          padding: 24px 16px 32px;
+        }
+
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="course-line">MGMT298D: Science and Strategy of AI | UCLA Anderson</div>
+      <div class="gold-rule"></div>
+
+      <h1>App Development Kit</h1>
+      <p class="subtitle">Weeks 8-10: Product Sprint</p>
+
+      <div class="model-note">
+        <p>This project rewards careful reading and initiative. Follow the instructions closely, but do not treat them as a script: when something is unclear, use Cowork/Codex to investigate, test, and make progress.</p>
+        <p>It should take less than an hour to get an initial barebones prototype working. To fully execute on your ideas, your team should budget 10 hours over the next 2 weeks, including the in-class time provided in Week 9.</p>
+      </div>
+
+      <h2>What This Kit Is For</h2>
+      <p>
+        This kit gives your team a working starting point for a small AI-powered web app. You will not begin from a blank screen. Instead, you will define the app idea, customize the starter files with Cowork/Codex, test the app on your computer, and then deploy it to Railway so other people can open it through a public URL.
+      </p>
+      <p>
+        The goal is not to become a software engineer in one week. The goal is to understand the basic workflow behind many AI applications: a user enters a request, the app sends that request to a model through an API, the model returns an answer, and the app displays the result.
+      </p>
+      <p>
+        It is acceptable to use synthetic data to demonstrate the app, and it is also acceptable for the app to implement one useful part of a larger product concept.
+      </p>
+      <div class="download-box">
+        <strong>Download the Kit</strong>
+        <p>
+          Start by downloading <a href="App_Development_Kit.zip" target="_blank" rel="noopener">App_Development_Kit.zip</a>. Unzip it, place the folder on your Desktop, and rename the folder <code>myapp</code>.
+        </p>
+      </div>
+
+      <h2>Phase 1: Initial Setup</h2>
+      <p>
+        This guide uses the command-line app built into your computer: Terminal on macOS and PowerShell on Windows. In the command-line blocks below, <code>$</code> and <code>PS&gt;</code> show where the command line starts. Type only the command that comes after those symbols.
+      </p>
+      <h3>1. Create the Project Folder</h3>
+      <ol>
+        <li>Download and unzip <code>App_Development_Kit.zip</code>.</li>
+        <li>Place the unzipped folder on your Desktop.</li>
+        <li>Rename the folder <code>myapp</code>.</li>
+        <li>Download and sign into either <a href="https://www.anthropic.com/product/claude-cowork" target="_blank" rel="noopener">Cowork</a> or <a href="https://openai.com/codex/" target="_blank" rel="noopener">Codex</a>. Each team should plan to use one paid coding assistant account, roughly $20 per month, for the duration of the product sprint.</li>
+        <li>Open the folder in Cowork/Codex.</li>
+        <li>Ask Cowork/Codex to read <code>AppPlan.md</code> and <code>App_Development_Kit.html</code> before editing anything.</li>
+      </ol>
+      <p>
+        Files ending in <code>.md</code> and <code>.env</code>, such as <code>AppPlan.md</code> and <code>local.env</code>, are plain text files. You can edit them in TextEdit on macOS or Notepad on Windows. If you use TextEdit, choose <strong>Format &gt; Make Plain Text</strong> before saving.
+      </p>
+
+      <h3>2. Install Node.js and npm</h3>
+      <p>
+        Node.js lets the starter app run on your computer. npm comes with Node.js and installs the app’s dependencies. In plain English, npm reads the app’s setup file and downloads the pieces the app needs to work.
+      </p>
+      <p>On macOS:</p>
+      <ol>
+        <li>Go to <a href="https://nodejs.org/en/download" target="_blank" rel="noopener">nodejs.org/en/download</a>.</li>
+        <li>Download and install <strong>macOS Installer (.pkg)</strong>.</li>
+        <li>Open Terminal.</li>
+        <li>Check that Node.js and npm are available:</li>
+      </ol>
+      <div class="terminal">
+        <pre><span class="prompt">$</span> node --version
+<span class="prompt">$</span> npm --version</pre>
+      </div>
+      <p>On Windows:</p>
+      <ol>
+        <li>Go to <a href="https://nodejs.org/en/download" target="_blank" rel="noopener">nodejs.org/en/download</a>.</li>
+        <li>Download and install <strong>Windows Installer (.msi)</strong>.</li>
+        <li>Open the Start menu, search for <strong>PowerShell</strong>, and open it.</li>
+        <li>Check that Node.js and npm are available:</li>
+      </ol>
+      <div class="terminal">
+        <pre><span class="prompt">PS&gt;</span> node --version
+<span class="prompt">PS&gt;</span> npm --version</pre>
+      </div>
+      <p>
+        If both commands print version numbers, continue.
+      </p>
+
+      <h3>3. Create a Railway Account</h3>
+      <p>
+        Railway is the service that will host your app online. Create or sign into a Railway account at <a href="https://railway.com" target="_blank" rel="noopener">railway.com</a>. The Railway free trial should work for the sprint and includes credits for up to 30 days. If you want the app to keep running after the trial, upgrade to the Hobby plan, which is $5 per month and includes $5 of usage.
+      </p>
+      <div class="model-note">
+        <strong>macOS note:</strong> Before using Railway, make sure Terminal has permission to work with files in your project folder. Open System Settings &gt; Privacy &amp; Security &gt; Full Disk Access, turn on Terminal, then quit and reopen Terminal.
+      </div>
+      <p>
+        The Railway command-line tool lets you send the app from your computer to Railway. It is included in this kit and will be installed when you run <code>npm install</code> in Step 5.
+      </p>
+      <h3>4. Create and Add the Gemini API Key</h3>
+      <div class="model-note">
+        This kit focuses on apps that use LLM APIs. You may also use a machine learning model, such as XGBoost, or a computer vision model, such as a CNN, if your app idea depends on a specific dataset. The steps are mostly the same, except that instead of the Gemini API you will need the relevant modeling packages, such as <code>sklearn</code> or <code>tensorflow</code>. Reach out to the instructor if you are not sure which approach your app needs.
+      </div>
+      <ol>
+        <li>Create or sign into a Google account. A personal Google account may be simpler if a school or work account blocks API key creation.</li>
+        <li>Go directly to the Google AI Studio API Keys page: <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">aistudio.google.com/app/apikey</a>.</li>
+        <li>Click <strong>Create API key</strong>. If Google asks you to choose a Cloud project, choose the option to create the key in a new project.</li>
+        <li>Copy the key when it appears and keep it private. It will look like a long string of letters and numbers, for example <code>AIzaSyFAKEKeyForClassDemo1234567890ABCD</code>.</li>
+        <li>Open <code>local.env</code> and paste your key where you see <code>your_real_key_here</code> in the line <code>GEMINI_API_KEY=your_real_key_here</code>. You will also add this key to Railway during deployment.</li>
+      </ol>
+
+      <h3>5. Install Dependencies</h3>
+      <p>
+        In Terminal or PowerShell, move into the app kit folder. The exact folder name may differ on your computer.
+      </p>
+      <p>On macOS:</p>
+      <div class="terminal">
+        <pre><span class="prompt">$</span> cd ~/Desktop/myapp
+<span class="prompt">$</span> npm install</pre>
+      </div>
+      <p>On Windows PowerShell:</p>
+      <div class="terminal">
+        <pre><span class="prompt">PS&gt;</span> cd "$env:USERPROFILE\Desktop\myapp"
+<span class="prompt">PS&gt;</span> npm install</pre>
+      </div>
+      <p>
+        This installs the software pieces the starter app needs, including the Railway command-line tool for this project. It will create a folder called <code>node_modules</code>. That folder is not included in the kit, and you should not edit or share it.
+      </p>
+
+      <h2>Phase 2: Prototype Locally</h2>
+
+      <h3>1. Define First Version</h3>
+      <p>
+        Open <code>AppPlan.md</code> and fill in the app idea section: use case, intended user, user input, model output, model approach, and whether the app needs source material or a dataset. This is your direct instruction to Cowork/Codex about what to build. The purpose is not to design the perfect app on the first try. The purpose is to get something basic working; once the simple version runs, you can iterate with Cowork/Codex to improve the prompt, interface, examples, and source material.
+      </p>
+
+      <h3>2. Customize with Cowork/Codex</h3>
+      <p>
+        The purpose of this step is to ask Cowork/Codex to turn your app plan into a first working version that you can test locally. You do not need to finish the whole product here. Get the basic version working, then keep building later.
+      </p>
+      <div class="model-note">
+        <strong>Use the strongest model and reasoning mode for the initial build.</strong> In Cowork, choose Claude Opus 4.7 if available and turn on Extended Thinking. In Codex, choose GPT-5.5 and use High or Extra High Intelligence for the main build. These settings are slower and use more of your rate limits, so lower the reasoning level for small copy edits, color tweaks, or other simple changes.
+      </div>
+      <p>
+        Start with the following clear instruction:
+      </p>
+      <div class="agent-instruction">
+        <pre><span class="agent-mark">&gt;</span> Read AppPlan.md and App_Development_Kit.html. Before editing, summarize the app purpose, required layout, colors, inputs, outputs, system prompt requirements, and model behavior from AppPlan.md. Then build the first working version using the files already in this folder. Treat the design notes in AppPlan.md as requirements. Create a clearly labeled, editable system prompt in the code for any LLM or RAG app. Keep it simple, make sure it runs locally at http://localhost:3000, and keep it deployable on Railway.</pre>
+      </div>
+      <h3>3. Run Locally</h3>
+      <p>
+        On macOS, clear anything still using port 3000, then start the app:
+      </p>
+      <div class="terminal">
+        <pre><span class="prompt">$</span> lsof -ti tcp:3000 | xargs kill
+<span class="prompt">$</span> npm start</pre>
+      </div>
+      <p>
+        On Windows PowerShell, start the app:
+      </p>
+      <div class="terminal">
+        <pre><span class="prompt">PS&gt;</span> npm start</pre>
+      </div>
+      <div class="model-note">
+        The first macOS command only stops a local process already using the app preview port. If it prints nothing, that means port 3000 was already clear. If you still see an error saying port 3000 is already in use, close other Terminal, PowerShell, Cowork, or Codex preview windows and try again. If that does not work, restart your computer and try again.
+      </div>
+      <p>
+        Open the local address shown in the terminal, usually <code>http://localhost:3000</code>. Test the starter app.
+      </p>
+      <p>
+        Important: this command keeps running because it is keeping the local app alive. When you are done testing, return to the terminal and press <code>Ctrl-C</code>.
+      </p>
+
+      <h2>Phase 3: Deploy on Railway</h2>
+
+      <h3>1. Log Into Railway</h3>
+      <div class="terminal">
+        <pre><span class="prompt">$</span> npm run railway -- login</pre>
+      </div>
+      <p>
+        The login command opens a browser window. After logging in, return to the terminal.
+      </p>
+
+      <h3>2. Check the Railway Account</h3>
+      <div class="terminal">
+        <pre><span class="prompt">$</span> npm run railway -- whoami</pre>
+      </div>
+      <p>
+        This confirms which Railway account is connected in your terminal.
+      </p>
+
+      <h3>3. Create Railway Project</h3>
+      <p>Run this from inside the project folder.</p>
+      <div class="terminal">
+        <pre><span class="prompt">$</span> npm run railway -- init</pre>
+      </div>
+      <p>
+        If Railway asks questions, choose your workspace or account, create a new project, and name it <code>myapp</code> or another short name. This creates the Railway project, but it may not create the deployable service yet.
+      </p>
+
+      <h3>4. Create the Service</h3>
+      <p>
+        Deploy once so Railway can create the web service for this folder.
+      </p>
+      <div class="terminal">
+        <pre><span class="prompt">$</span> npm run railway -- up</pre>
+      </div>
+      <p>
+        When the deployment finishes, return to Terminal or PowerShell and press <code>Ctrl-C</code> so you can enter the next command.
+      </p>
+
+      <h3>5. Link the Service</h3>
+      <p>
+        Link your local folder to the service Railway just created.
+      </p>
+      <div class="terminal">
+        <pre><span class="prompt">$</span> npm run railway -- service link</pre>
+      </div>
+      <p>
+        Select the service with your project name, usually <code>myapp</code>.
+      </p>
+      <div class="terminal">
+        <pre><span class="prompt">$</span> npm run railway -- status</pre>
+      </div>
+      <p>
+        In the status output, the linked service should no longer say <code>None</code>.
+      </p>
+
+      <h3>6. Add Gemini Key</h3>
+      <p>
+        The <code>local.env</code> file works only on your computer. Railway needs its own copy of the key. Set these variables only after the service exists and is linked. If Railway says <code>Project has no services</code>, go back to Create the Service and Link the Service before trying this again.
+      </p>
+      <div class="terminal">
+        <pre><span class="prompt">$</span> npm run railway -- variable set GEMINI_API_KEY="YOUR_KEY_HERE"</pre>
+      </div>
+      <div class="terminal">
+        <pre><span class="prompt">$</span> npm run railway -- variable set GEMINI_MODEL="gemini-2.5-flash"</pre>
+      </div>
+
+      <h3>7. Redeploy</h3>
+      <div class="terminal">
+        <pre><span class="prompt">$</span> npm run railway -- up</pre>
+      </div>
+      <p>
+        Redeploy after setting variables so the running app can use the Gemini key.
+      </p>
+
+      <h3>8. Create a Public URL</h3>
+      <div class="terminal">
+        <pre><span class="prompt">$</span> npm run railway -- domain</pre>
+      </div>
+      <p>
+        Railway will give you a free Railway-provided URL. Open that URL in your browser to test the deployed app.
+      </p>
+
+      <h3>9. Set a Custom URL</h3>
+      <p>
+        After the site is working, go to <a href="https://railway.com" target="_blank" rel="noopener">railway.com</a> and open the dashboard. Open your project, click the deployed service, then go to <strong>Settings</strong> &gt; <strong>Networking</strong> &gt; <strong>Public Networking</strong>. Edit the default Railway URL to a new one.
+      </p>
+
+      <h2>Phase 4: Iterate</h2>
+
+      <h3>1. Pick One Improvement</h3>
+      <p>
+        Once the first deployed version works, choose one improvement at a time. Good next steps include a clearer app name, a cleaner visual design, a better sample question, a more specific system prompt, a new input field, or a more useful answer format.
+      </p>
+
+      <h3>2. Ask Cowork/Codex for the Change</h3>
+      <p>
+        Be specific about what should change and what should stay the same. For example, a design prompt might look like:
+      </p>
+      <div class="agent-instruction">
+        <pre><span class="agent-mark">&gt;</span> Redesign the app as a centered, single-column page. Keep the same form fields, submit button, model call, and Railway deployment setup. Use a white background, one orange accent color for buttons and headings, generous spacing, and a professional style for MBA students. Do not add new features yet. After editing, tell me exactly which files changed and how to test the design locally.</pre>
+      </div>
+      <p>
+        A functionality prompt might look like:
+      </p>
+      <div class="agent-instruction">
+        <pre><span class="agent-mark">&gt;</span> Add a saved answers section below the model response. Each time the user submits a question, save the question and answer in a simple list on the page. Add a Clear saved answers button. Keep the data only in the browser for this session; do not add accounts, databases, or login. Keep the existing Railway deployment setup unchanged. After editing, explain how to test this feature locally.</pre>
+      </div>
+
+      <h3>3. Test and Redeploy</h3>
+      <p>
+        After each change, run the app locally.
+      </p>
+      <div class="terminal">
+        <pre><span class="prompt">$</span> npm start</pre>
+      </div>
+      <p>
+        Test it locally, then deploy again on Railway.
+      </p>
+      <div class="terminal">
+        <pre><span class="prompt">$</span> npm run railway -- up</pre>
+      </div>
+
+      <h2>If You Get Stuck</h2>
+      <div class="model-note">
+        <strong>Do not guess.</strong> Copy the exact error message, tell Cowork/Codex what command you ran, and ask it to explain the likely cause before editing files.
+      </div>
+
+      <p class="closing-note">Good luck and happy building.</p>
+    </main>
+    <script>
+      function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          return navigator.clipboard.writeText(text);
+        }
+
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.setAttribute("readonly", "");
+        textarea.style.position = "fixed";
+        textarea.style.top = "-9999px";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
+        return Promise.resolve();
+      }
+
+      function cleanCopyText(block, text) {
+        if (block.classList.contains("terminal")) {
+          return text.replace(/^\s*(\$|PS&gt;|PS>)\s?/gm, "").trim();
+        }
+
+        if (block.classList.contains("agent-instruction")) {
+          return text.replace(/^\s*&gt;\s?/gm, "").replace(/^\s*>\s?/gm, "").trim();
+        }
+
+        return text.trim();
+      }
+
+      document.querySelectorAll(".terminal, .agent-instruction").forEach((block) => {
+        const pre = block.querySelector("pre");
+        if (!pre) return;
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "copy-button";
+        button.textContent = "Copy";
+        button.setAttribute("aria-label", "Copy this snippet");
+
+        button.addEventListener("click", async () => {
+          const text = cleanCopyText(block, pre.innerText || pre.textContent || "");
+          await copyText(text);
+          button.textContent = "Copied";
+          window.setTimeout(() => {
+            button.textContent = "Copy";
+          }, 1200);
+        });
+
+        block.appendChild(button);
+      });
+    </script>
+  </body>
+</html>

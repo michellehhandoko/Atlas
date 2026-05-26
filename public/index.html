@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Atlas — Your Personal Travel Concierge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+
+    <!-- ═══════════════════════════════════════
+         VIEW: FORM
+    ════════════════════════════════════════ -->
+    <div id="view-form" class="view active">
+      <header class="hero">
+        <div class="hero-inner">
+          <div class="atlas-logo">Atlas</div>
+          <p class="hero-tagline">Your personal travel concierge</p>
+          <button type="button" id="my-trips-btn" class="my-trips-btn" hidden>My Trips</button>
+        </div>
+      </header>
+
+      <main class="form-wrap">
+        <form id="trip-form" novalidate>
+
+          <div class="form-card">
+            <h2 class="form-section-title">Where are you going?</h2>
+
+            <div id="legs-list" class="legs-list">
+              <!-- First leg (always present) -->
+              <div class="leg-row" data-leg-index="0">
+                <div class="leg-index" aria-hidden="true">1</div>
+                <div class="leg-fields">
+                  <div class="field">
+                    <label>Destination</label>
+                    <input
+                      class="leg-destination"
+                      type="text"
+                      placeholder="e.g. Tokyo, Japan"
+                      autocomplete="off"
+                    >
+                  </div>
+                  <div class="field-row">
+                    <div class="field">
+                      <label>Departure</label>
+                      <input class="leg-start" type="date">
+                    </div>
+                    <div class="field">
+                      <label>Return</label>
+                      <input class="leg-end" type="date">
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="leg-remove-btn" aria-label="Remove this destination" hidden>×</button>
+              </div>
+            </div>
+
+            <button type="button" id="add-leg-btn" class="add-leg-btn">
+              <span class="add-leg-icon" aria-hidden="true">+</span>
+              <span>Add another destination</span>
+            </button>
+
+            <div class="field-row" style="margin-top: 20px;">
+              <div class="field">
+                <label for="groupSize">Travelers</label>
+                <select id="groupSize" name="groupSize">
+                  <option value="1">Solo (1)</option>
+                  <option value="2" selected>Couple (2)</option>
+                  <option value="3-4">Small group (3–4)</option>
+                  <option value="5+">Large group (5+)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="budgetLevel">Budget per person</label>
+                <select id="budgetLevel" name="budgetLevel">
+                  <option value="budget">Budget (&lt;$100/day)</option>
+                  <option value="mid" selected>Mid-range ($100–200/day)</option>
+                  <option value="luxury">Luxury ($200+/day)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <h2 class="form-section-title">How do you like to travel?</h2>
+
+            <fieldset class="style-group" id="tripStyleGroup">
+              <legend class="sr-only">Trip Style</legend>
+
+              <label class="style-card">
+                <input type="radio" name="tripStyle" value="flexible">
+                <span class="style-name">Flexible</span>
+                <span class="style-desc">Loose suggestions, go with the flow</span>
+              </label>
+
+              <label class="style-card">
+                <input type="radio" name="tripStyle" value="structured" checked>
+                <span class="style-name">Structured</span>
+                <span class="style-desc">Hour-by-hour plan, nothing left to chance</span>
+              </label>
+
+              <label class="style-card">
+                <input type="radio" name="tripStyle" value="top3">
+                <span class="style-name">Top 3</span>
+                <span class="style-desc">Just the absolute must-dos</span>
+              </label>
+            </fieldset>
+          </div>
+
+          <div class="form-card">
+            <h2 class="form-section-title">Anything on your must-do list?</h2>
+
+            <div class="field">
+              <label for="interests">Interests &amp; must-dos <span class="optional">(optional)</span></label>
+              <textarea
+                id="interests"
+                name="interests"
+                rows="3"
+                placeholder="e.g. street food, hiking, hidden bars, museums, architecture, beaches..."
+              ></textarea>
+            </div>
+
+            <div class="field">
+              <label for="loyaltyPrograms">Travel loyalty programs <span class="optional">(optional)</span></label>
+              <input
+                id="loyaltyPrograms"
+                name="loyaltyPrograms"
+                type="text"
+                placeholder="e.g. Marriott Bonvoy, United MileagePlus, Chase Sapphire"
+              >
+            </div>
+          </div>
+
+          <div id="form-error" class="form-error hidden"></div>
+
+          <button type="submit" id="submit-btn" class="cta-btn">
+            <span class="cta-text">Plan My Trip</span>
+            <span class="cta-arrow">→</span>
+          </button>
+
+        </form>
+      </main>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         VIEW: LOADING
+    ════════════════════════════════════════ -->
+    <div id="view-loading" class="view">
+      <div class="loading-inner">
+        <div class="compass">
+          <div class="compass-ring"></div>
+          <div class="compass-needle"></div>
+        </div>
+        <p id="loading-msg" class="loading-msg">Planning your adventure...</p>
+        <p class="loading-sub">Atlas is consulting its sources</p>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         VIEW: RESULTS
+    ════════════════════════════════════════ -->
+    <div id="view-results" class="view">
+      <header class="results-nav">
+        <button type="button" id="atlas-home-btn" class="atlas-logo-sm">Atlas</button>
+        <div class="results-nav-actions">
+          <button id="share-btn" class="nav-action-btn" title="Copy shareable link">Share</button>
+          <button id="calendar-btn" class="nav-action-btn" title="Download calendar file">Calendar</button>
+          <button id="print-btn" class="nav-action-btn" title="Print itinerary">Print</button>
+          <button id="new-trip-btn" class="new-trip-btn" title="Start a new trip">← New Trip</button>
+        </div>
+      </header>
+      <div id="results-content" class="results-content"></div>
+    </div>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
