@@ -962,6 +962,22 @@ textarea {
   position: relative;
 }
 
+.activity-item-mappable {
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.activity-item-mappable:hover {
+  background: rgba(30, 95, 173, 0.05);
+}
+
+.activity-item-mappable:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+  background: rgba(30, 95, 173, 0.06);
+}
+
 /* Vertical connector line */
 .activity-item:not(:last-child)::after {
   content: '';
@@ -2613,6 +2629,13 @@ textarea {
     break-inside: avoid;
     grid-template-columns: 48px 18px 1fr;
     padding: 7px 0;
+  }
+
+  .activity-item-mappable,
+  .activity-item-mappable:hover {
+    background: transparent;
+    box-shadow: none;
+    cursor: default;
   }
 
   .activity-item:not(:last-child)::after {

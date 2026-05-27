@@ -16,6 +16,7 @@ let autocompleteService = null;
 let atlasMap = null;
 let atlasMapInfoWindow = null;
 let atlasMapOverlays = [];
+let atlasMapMarkerLookup = new Map();
 let mapViewMode = 'all';
 let currentItinerary = null;
 let revisionHistory = [];   // [{ feedback, timestamp }] — cleared on new trip
@@ -1799,6 +1800,24 @@ function buildActivity(act, day, actIdx, dayIdx) {
   if (Number.isInteger(actIdx)) item.dataset.actIdx = String(actIdx);
   if (Number.isInteger(dayIdx)) item.dataset.dayIdx = String(dayIdx);
 
+  if (canOpenActivityOnMap(act, day)) {
+    item.classList.add('activity-item-mappable');
+    item.tabIndex = 0;
+    item.setAttribute('role', 'button');
+    item.setAttribute('aria-label', `Show ${act.name || 'this stop'} on the trip map`);
+    item.title = 'Show on map';
+    item.addEventListener('click', (event) => {
+      if (event.target.closest('a, button')) return;
+      openMapMarkerForActivity(dayIdx, actIdx);
+    });
+    item.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      if (event.target.closest('a, button')) return;
+      event.preventDefault();
+      openMapMarkerForActivity(dayIdx, actIdx);
+    });
+  }
+
   const time = el('div', 'activity-time');
   time.textContent = isTopThreeTrip() ? `Pick ${actIdx + 1}` : (act.time || '');
   item.appendChild(time);
@@ -2192,6 +2211,7 @@ function renderMapPins(itinerary) {
 
   atlasMapOverlays.forEach(overlay => overlay.setMap(null));
   atlasMapOverlays = [];
+  atlasMapMarkerLookup.clear();
 
   const bounds     = new google.maps.LatLngBounds();
   let hasMarkers   = false;
@@ -2226,11 +2246,9 @@ function renderMapPins(itinerary) {
         zIndex: actIdx,
       });
       atlasMapOverlays.push(marker);
+      atlasMapMarkerLookup.set(getActivityMapKey(dayIdx, actIdx), { marker, act, color });
 
-      marker.addListener('click', () => {
-        atlasMapInfoWindow.setContent(buildInfoWindowContent(act, color));
-        atlasMapInfoWindow.open(atlasMap, marker);
-      });
+      marker.addListener('click', () => openMapMarker({ marker, act, color }));
     });
 
     // Route line through the day
@@ -2261,6 +2279,40 @@ function renderMapPins(itinerary) {
     if (fallbackCenter) atlasMap.setCenter(fallbackCenter);
   }
   updateMapCoverageStatus(visibleCount, expectedCount);
+}
+
+function getActivityMapKey(dayIdx, actIdx) {
+  return `${dayIdx}:${actIdx}`;
+}
+
+function canOpenActivityOnMap(act, day) {
+  if (!mapsReady || !mapsKey || !isCoordinate(act?.coordinates)) return false;
+  return !isMapCoordinateOutlier(act, day, currentItinerary?.trip);
+}
+
+function openMapMarkerForActivity(dayIdx, actIdx) {
+  if (!atlasMap || !atlasMapInfoWindow || !currentItinerary) return;
+
+  let entry = atlasMapMarkerLookup.get(getActivityMapKey(dayIdx, actIdx));
+  if (!entry) {
+    renderMapPins(currentItinerary);
+    entry = atlasMapMarkerLookup.get(getActivityMapKey(dayIdx, actIdx));
+  }
+  if (!entry) {
+    showToast('This stop is not pinned on the map yet.');
+    return;
+  }
+
+  document.querySelector('.map-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  openMapMarker(entry);
+}
+
+function openMapMarker({ marker, act, color }) {
+  if (!atlasMap || !atlasMapInfoWindow || !marker) return;
+  atlasMap.panTo(marker.getPosition());
+  if (atlasMap.getZoom() < 13) atlasMap.setZoom(13);
+  atlasMapInfoWindow.setContent(buildInfoWindowContent(act, color));
+  atlasMapInfoWindow.open(atlasMap, marker);
 }
 
 function updateMapCoverageStatus(visibleCount, expectedCount) {
