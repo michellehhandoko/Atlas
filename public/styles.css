@@ -552,6 +552,14 @@ textarea {
   padding: 0 20px 64px;
 }
 
+.ai-disclosure {
+  margin: 42px auto 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 /* Trip Banner */
 .trip-banner {
   background: linear-gradient(135deg, var(--navy) 0%, #1a3a6b 60%, #1E5FAD 100%);
@@ -2500,6 +2508,7 @@ textarea {
   .print-dialog-overlay,
   .destination-dialog-overlay,
   .my-trips-overlay,
+  .ai-disclosure,
   .my-trips-btn,
   .nav-action-btn,
   .new-trip-btn {

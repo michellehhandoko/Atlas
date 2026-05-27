@@ -1486,11 +1486,18 @@ function renderResults(itinerary) {
   if (supportingCardsSection) container.appendChild(supportingCardsSection);
   const actionItemsSection = buildActionItemsSection(itinerary);
   if (actionItemsSection) container.appendChild(actionItemsSection);
+  container.appendChild(buildAiDisclosure());
 
   // Init map after DOM is ready (or just refresh pins if the map was preserved)
   if (mapsReady && mapsKey) {
     requestAnimationFrame(() => atlasMap ? renderMapPins(itinerary) : initMap(itinerary));
   }
+}
+
+function buildAiDisclosure() {
+  const note = el('p', 'ai-disclosure');
+  note.textContent = 'Powered by GPT-4o mini · Verified where possible with Google Places. Confirm details before booking.';
+  return note;
 }
 
 function normalizeTopThreeItinerary(itinerary) {
