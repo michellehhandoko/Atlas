@@ -4,6 +4,11 @@ AI-powered travel concierge that generates personalized day-by-day itineraries w
 
 Built as a final project for *The Science and Strategy of Artificial Intelligence* at UCLA.
 
+**[Try it live →](https://atlastravel.up.railway.app)**
+
+![Atlas itinerary view](screenshot-itinerary.png)
+![Atlas trip form](screenshot-form.png)
+
 ---
 
 ## What it does
