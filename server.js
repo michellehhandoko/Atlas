@@ -683,6 +683,21 @@ app.get('/share/:id([a-f0-9]{12})', (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// ── Shared prompt labels ─────────────────────────────────────
+// Used in buildUserMessage, regenerate-day, and swap-activity
+// to keep budget/style descriptions consistent across all calls.
+const BUDGET_LABELS = {
+  budget:  'budget traveler (under $100/day per person) — prioritize affordable/free options and value',
+  mid:     'mid-range ($100–200/day per person) — mix paid experiences with strong-value highlights',
+  luxury:  'luxury ($200+/day per person) — prioritize premium, bookable, high-touch experiences; free landmarks are okay only with a premium angle',
+};
+
+const STYLE_LABELS = {
+  flexible:   'flexible and relaxed — loose suggestions, not hour-by-hour',
+  structured: 'structured and detailed — hour-by-hour daily schedule',
+  top3:       'top 3 priorities only — just the absolute must-dos, no full schedule',
+};
+
 // ── Input limits & allowed values ────────────────────────────
 // All of these protect the OpenAI bill: every field below ends up
 // inside a prompt, so unbounded input = unbounded token cost.
@@ -798,17 +813,8 @@ function buildUserMessage(input, mode) {
   const { tripLegs, groupSize, budgetLevel, interests, tripStyle, loyaltyPrograms } = input;
   const isMultiCity = tripLegs.length > 1;
 
-  const budgetLabels = {
-    budget: 'budget traveler (under $100/day per person) — prioritize affordable/free options and value',
-    mid: 'mid-range ($100–200/day per person) — mix paid experiences with strong-value highlights',
-    luxury: 'luxury ($200+/day per person) — prioritize premium, bookable, high-touch experiences; free landmarks are okay only with a premium angle'
-  };
-
-  const styleLabels = {
-    flexible: 'flexible and relaxed — loose suggestions, not hour-by-hour',
-    structured: 'structured and detailed — hour-by-hour daily schedule',
-    top3: 'top 3 priorities only — just the absolute must-dos, no full schedule'
-  };
+  const budgetLabels = BUDGET_LABELS;
+  const styleLabels  = STYLE_LABELS;
 
   const legLines = tripLegs.map((l, i) =>
     `  ${i + 1}. ${l.destination} — ${l.startDate || 'flexible start'} to ${l.endDate || 'flexible end'}`
@@ -961,28 +967,16 @@ ${safeFeedback}
 
 Return the FULL revised itinerary as a JSON object matching the same schema as the input above. Apply ONLY the requested change; copy every unchanged field verbatim from the input.`;
 
-    const ai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-    const response = await ai.chat.completions.create({
-      model: modelName,
-      messages: [
-        { role: 'system', content: REVISE_SYSTEM_PROMPT },
-        { role: 'user', content: userMessage }
-      ],
-      response_format: { type: 'json_object' },
-      temperature: 0.5  // lower than initial gen — we want faithful edits, not creativity
-    });
-
-    const rawText = response.choices?.[0]?.message?.content || '';
-
     let revised;
     try {
-      revised = JSON.parse(rawText);
-    } catch {
-      console.error(`[req ${req.id}] Revise JSON parse failed. Raw response:`, rawText.slice(0, 500));
-      return res.status(500).json({
-        error: 'The model returned malformed JSON. Please try again.'
+      revised = await callOpenAIJson({
+        systemPrompt: REVISE_SYSTEM_PROMPT,
+        userMessage,
+        temperature: 0.5, // lower than initial gen — we want faithful edits, not creativity
       });
+    } catch (parseOrCallErr) {
+      console.error(`[req ${req.id}] Revise call failed:`, parseOrCallErr);
+      return res.status(500).json({ error: 'The model returned malformed JSON. Please try again.' });
     }
 
     res.json({ itinerary: revised, model: modelName });
@@ -1021,16 +1015,8 @@ app.post('/api/itinerary/regenerate-day', async (req, res) => {
       loyaltyPrograms = ''
     } = formContext;
 
-    const budgetLabels = {
-      budget: 'budget traveler (under $100/day per person)',
-      mid: 'mid-range ($100–200/day per person)',
-      luxury: 'luxury ($200+/day per person)'
-    };
-    const styleLabels = {
-      flexible: 'flexible and relaxed — loose suggestions, not hour-by-hour',
-      structured: 'structured and detailed — hour-by-hour daily schedule',
-      top3: 'top 3 priorities only — just the absolute must-dos'
-    };
+    const budgetLabels = BUDGET_LABELS;
+    const styleLabels  = STYLE_LABELS;
 
     const userMessage = `Regenerate the following day of an existing trip with fresh picks. Keep day_number, date_label, and destination identical. Pick different activities.
 
@@ -1118,16 +1104,8 @@ app.post('/api/itinerary/swap-activity', async (req, res) => {
       loyaltyPrograms = ''
     } = formContext;
 
-    const budgetLabels = {
-      budget: 'budget traveler (under $100/day per person)',
-      mid: 'mid-range ($100–200/day per person)',
-      luxury: 'luxury ($200+/day per person)'
-    };
-    const styleLabels = {
-      flexible: 'flexible and relaxed',
-      structured: 'structured and detailed',
-      top3: 'top 3 priorities only'
-    };
+    const budgetLabels = BUDGET_LABELS;
+    const styleLabels  = STYLE_LABELS;
 
     // Pull neighbouring activities (the one before and after) so the model
     // can write a sensible travel_note and avoid duplicating something the
