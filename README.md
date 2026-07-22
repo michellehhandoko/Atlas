@@ -2,9 +2,8 @@
 
 AI-powered travel concierge that generates personalized day-by-day itineraries with interactive maps, hotel picks, budget breakdowns, and calendar export.
 
-Built as a final project for *The Science and Strategy of Artificial Intelligence* at UCLA.
+Built as a final project for *The Science and Strategy of Artificial Intelligence*, part of the MBA curriculum at UCLA Anderson. This is one of two AI apps developed across the program — the other is [Personal Libby](https://github.com/michellehhandoko/PersonalLib), an AI-powered book recommender.
 
-**[Try it live →](https://atlastravel.up.railway.app)**
 
 ![Atlas itinerary view](screenshot-itinerary.png)
 ![Atlas trip form](screenshot-form.png)
