@@ -60,4 +60,4 @@ You enter your destination, travel dates, group size, budget, and interests — 
 
 ## Deployment
 
-Deployed on [Railway](https://railway.app). Set the same environment variables from `local.env` in your Railway service settings. Railway's Postgres add-on injects `DATABASE_URL` automatically when connected.
+Configured for [Railway](https://railway.app) (see `railway.json`). Set the same environment variables from `local.env` in the Railway service settings; Railway's Postgres add-on injects `DATABASE_URL` automatically when connected.
